@@ -4,6 +4,74 @@ import numpy as _np
 UNIT_NAME_TO_VALUE = {}
 UNIT_NAME_TO_LATEX = {}
 
+# unit name : python string
+# unit value : python float
+# unit latex : python string
+
+# map of name -> (value, latex)
+
+SYSTEMS = {
+    'mks': dict(
+            length = 1,
+            time = 1,
+            mass = 1,
+            charge = 1,
+            temperature = 1,
+            angle = 1,
+            quantity = 1,
+    ),
+    'atomic': dict(
+            length = 1 / 5.291_772_106_7e-11,
+            time = 1 / 2.418_884_326_505e-17,
+            mass = 1 / 9.109_382_91e-31,
+            charge = 1 / 1.602_176_565e-19,
+            temperature = 1 / 3.157_746_4e5,
+            angle = 1,
+            quantity = 1,
+    )
+}
+
+UNITLESS_CONSTANTS = {
+    'pi': _np.pi,
+    'twopi': 2 * _np.pi,
+}
+
+
+class Unit(float):
+    def __new__(cls, value, *args, **kwargs):
+        return float.__new__(cls, value)
+
+    def __init__(self, value, name, latex):
+        float.__init__(value)
+        self.name = name
+        self.latex = latex
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}(name = {self.name}, latex = {self.latex})'
+
+
+class UnitSystem:
+    def __init__(self, system):
+        self.set_system(system)
+
+    def set_system(self, system):
+        self._base_units = SYSTEMS[system]
+
+    def parse_unit_name(self, unit_name):
+        pass
+
+    def __getattr__(self, unit_name):
+        try:
+            super().__getattribute__(unit_name)
+        except AttributeError:
+            return self.parse_unit_name(unit_name)
+
+    def __getitem__(self, unit_name):
+        return self.parse_unit_name(unit_name)
+
+
+u = UnitSystem('mks')
+
 
 def get_unit_value_and_latex_from_unit(unit):
     """Return the numerical value of the unit and its LaTeX representation from a unit name."""
