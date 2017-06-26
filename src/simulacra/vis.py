@@ -231,6 +231,16 @@ def save_current_figure(name: str,
     return path
 
 
+def points_to_inches(points: Union[float, int]) -> Union[float, int]:
+    """Convert the input from points to inches (72 points per inch)."""
+    return points / 72
+
+
+def inches_to_points(inches: Union[float, int]) -> Union[float, int]:
+    """Convert the input from inches to points (72 points per inch)."""
+    return inches * 72
+
+
 class FigureManager:
     """
     A class that manages a matplotlib figure: creating it, showing it, saving it, and cleaning it up.
